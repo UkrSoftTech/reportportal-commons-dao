@@ -29,21 +29,26 @@ import java.util.List;
  */
 public interface LaunchRepository extends ReportPortalRepository<Launch, Long>, LaunchRepositoryCustom {
 
-	void deleteByProjectId(Long projectId);
+    void deleteByProjectId(Long projectId);
 
-	List<Launch> findAllByName(String name);
+    List<Launch> findAllByName(String name);
 
-	List<Launch> findByProjectIdAndStartTimeGreaterThanAndMode(Long projectId, LocalDateTime after, LaunchModeEnum mode);
+    List<Launch> findByProjectIdAndStartTimeGreaterThanAndMode(Long projectId, LocalDateTime after, LaunchModeEnum mode);
 
-	@Query(value = "SELECT * FROM launch l WHERE l.id <= :startingLaunchId AND l.name = :launchName "
-			+ "AND l.project_id = :projectId ORDER BY id DESC LIMIT :historyDepth", nativeQuery = true)
-	List<Launch> findLaunchesHistory(@Param("historyDepth") int historyDepth, @Param("startingLaunchId") Long startingLaunchId,
-			@Param("launchName") String launchName, @Param("projectId") Long projectId);
+    @Query(value = "SELECT * FROM launch l WHERE l.id <= :startingLaunchId AND l.name = :launchName "
+            + "AND l.project_id = :projectId ORDER BY id DESC LIMIT :historyDepth", nativeQuery = true)
+    List<Launch> findLaunchesHistory(@Param("historyDepth") int historyDepth, @Param("startingLaunchId") Long startingLaunchId,
+                                     @Param("launchName") String launchName, @Param("projectId") Long projectId);
 
-	@Query(value = "SELECT merge_launch(?1)", nativeQuery = true)
-	void mergeLaunchTestItems(Long launchId);
+    @Query(value = "SELECT merge_launch(?1)", nativeQuery = true)
+    void mergeLaunchTestItems(Long launchId);
 
-	@Query(value = "SELECT id FROM launch WHERE project_id=:projectId", nativeQuery = true)
-	List<Long> findLaunchIdsByProjectId(@Param("projectId") Long projectId);
+    @Query(value = "SELECT id FROM launch WHERE project_id=:projectId", nativeQuery = true)
+    List<Long> findLaunchIdsByProjectId(@Param("projectId") Long projectId);
+
+    Launch findByUuid(String uuid);
+
+    @Query(value = "SELECT nextval('launch_id_seq')", nativeQuery = true)
+    Long getNextId();
 
 }
